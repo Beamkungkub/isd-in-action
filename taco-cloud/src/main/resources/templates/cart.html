@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Taco Cloud - Cart</title>
+  </head>
+
+  <body>
+    <h1>Your taco cart</h1>
+    <img th:src="@{/images/TacoCloud.png}" width="200"/>
+
+    <div th:if="${#lists.isEmpty(tacoOrder.tacos)}">
+      <p>Your cart is empty.</p>
+    </div>
+
+    <table th:unless="${#lists.isEmpty(tacoOrder.tacos)}" border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Taco</th>
+          <th>Ingredients</th>
+          <th>Price</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="taco, stat : ${tacoOrder.tacos}">
+          <td th:text="${stat.count}">1</td>
+          <td th:text="${taco.name}">Taco name</td>
+          <td>
+            <span th:each="ingredient, s : ${taco.ingredients}">
+              <span th:text="${ingredient.name}">Ingredient</span><span th:unless="${s.last}">, </span>
+            </span>
+          </td>
+          <td th:text="'$' + ${taco.price}">$0.00</td>
+          <td>
+            <form method="POST" th:action="@{/cart/remove/{i}(i=${stat.index})}">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><b>Grand Total</b></td>
+          <td colspan="2"><b th:text="'$' + ${tacoOrder.totalPrice}">$0.00</b></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <p>
+      <a th:href="@{/design}" id="design">Add another taco</a>
+      |
+      <a th:href="@{/orders/current}" id="checkout">Make payment</a>
+    </p>
+  </body>
+</html>

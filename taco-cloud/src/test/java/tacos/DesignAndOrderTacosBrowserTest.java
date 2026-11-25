@@ -47,6 +47,7 @@ public class DesignAndOrderTacosBrowserTest {
     buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
     clickBuildAnotherTaco();
     buildAndSubmitATaco("Another Taco", "COTO", "CARN", "JACK", "LETC", "SRCR");
+    clickMakePayment();
     fillInAndSubmitOrderForm();
     assertThat(browser.getCurrentUrl()).isEqualTo(homePageUrl());
   }
@@ -57,6 +58,7 @@ public class DesignAndOrderTacosBrowserTest {
     clickDesignATaco();
     assertDesignPageElements();
     buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
+    clickMakePayment();
     submitEmptyOrderForm();
     fillInAndSubmitOrderForm();
     assertThat(browser.getCurrentUrl()).isEqualTo(homePageUrl());
@@ -68,6 +70,7 @@ public class DesignAndOrderTacosBrowserTest {
     clickDesignATaco();
     assertDesignPageElements();
     buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
+    clickMakePayment();
     submitInvalidOrderForm();
     fillInAndSubmitOrderForm();
     assertThat(browser.getCurrentUrl()).isEqualTo(homePageUrl());
@@ -124,9 +127,14 @@ public class DesignAndOrderTacosBrowserTest {
     assertIngredient(sauceGroup, 1, "SRCR", "Sour Cream");
   }
 
+  private void clickMakePayment() {
+  assertThat(browser.getCurrentUrl()).isEqualTo(cartPageUrl());
+browser.findElement(By.cssSelector("a[id='checkout']")).click();
+}
 
   private void fillInAndSubmitOrderForm() {
-    assertThat(browser.getCurrentUrl()).startsWith(orderDetailsPageUrl());
+  
+    
     fillField("input#deliveryName", "Ima Hungry");
     fillField("input#deliveryStreet", "1234 Culinary Blvd.");
     fillField("input#deliveryCity", "Foodsville");
@@ -138,7 +146,7 @@ public class DesignAndOrderTacosBrowserTest {
     browser.findElement(By.cssSelector("form")).submit();
   }
 
-  private void submitEmptyOrderForm() {
+   private void submitEmptyOrderForm() {
     assertThat(browser.getCurrentUrl()).isEqualTo(currentOrderDetailsPageUrl());
     browser.findElement(By.cssSelector("form")).submit();
 
@@ -158,6 +166,7 @@ public class DesignAndOrderTacosBrowserTest {
         "Invalid CVV"
         );
   }
+    
 
   private List<String> getValidationErrorTexts() {
     List<WebElement> validationErrorElements = browser.findElements(By.className("validationError"));
@@ -215,10 +224,13 @@ public class DesignAndOrderTacosBrowserTest {
   }
 
   private void clickBuildAnotherTaco() {
-    assertThat(browser.getCurrentUrl()).startsWith(orderDetailsPageUrl());
-    browser.findElement(By.cssSelector("a[id='another']")).click();
-  }
-
+  assertThat(browser.getCurrentUrl()).startsWith(cartPageUrl());
+  browser.findElement(By.cssSelector("a[id='design']")).click();
+}
+  
+private String cartPageUrl() {
+  return homePageUrl() + "cart";
+}
 
   //
   // URL helper methods
